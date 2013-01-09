@@ -16,7 +16,8 @@ public class DbParcours implements Serializable {
 	private int id;
 	private String nom;
 	private String createur;
-	private String date_creation;
+	@Column(name = "date_creation")
+	private String dateCreation;
 	private int stat;
 	private static final long serialVersionUID = -4563248212271172837L;
 
@@ -48,12 +49,12 @@ public class DbParcours implements Serializable {
 		this.createur = createur;
 	}
 
-	public String getDate_creation() {
-		return this.date_creation;
+	public String getDateCreation() {
+		return dateCreation;
 	}
 
-	public void setDate_creation(String date_creation) {
-		this.date_creation = date_creation;
+	public void setDateCreation(String dateCreation) {
+		this.dateCreation = dateCreation;
 	}
 
 	public int getStat() {

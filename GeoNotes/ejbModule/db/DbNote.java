@@ -19,7 +19,8 @@ public class DbNote implements Serializable {
 	private String description;
 	private String commentaire;
 	private String createur;
-	private String date_creation;
+	@Column(name = "date_creation")
+	private String dateCreation;
 	private int stat;
 	private static final long serialVersionUID = -4816613731579229595L;
 
@@ -75,12 +76,12 @@ public class DbNote implements Serializable {
 		this.createur = createur;
 	}
 
-	public String getDate_creation() {
-		return this.date_creation;
+	public String getDateCreation() {
+		return this.dateCreation;
 	}
 
-	public void setDate_creation(String date_creation) {
-		this.date_creation = date_creation;
+	public void setDateCreation(String dateCreation) {
+		this.dateCreation = dateCreation;
 	}
 
 	public int getStat() {

@@ -12,9 +12,12 @@ import javax.persistence.*;
 public class DbEtape implements Serializable {
 
 	@Id
+	@GeneratedValue
 	private int id;
-	private int id_parcours;
-	private int id_note;
+	@Column(name = "id_parcours")
+	private int idParcours;
+	@Column(name = "id_note")
+	private int idNote;
 	private int position;
 	private static final long serialVersionUID = -7727732245296974946L;
 
@@ -30,20 +33,20 @@ public class DbEtape implements Serializable {
 		this.id = id;
 	}
 
-	public int getId_parcours() {
-		return this.id_parcours;
+	public int getIdParcours() {
+		return this.idParcours;
 	}
 
-	public void setId_parcours(int id_parcours) {
-		this.id_parcours = id_parcours;
+	public void setIdParcours(int idParcours) {
+		this.idParcours = idParcours;
 	}
 
-	public int getId_note() {
-		return this.id_note;
+	public int getIdNote() {
+		return this.idNote;
 	}
 
-	public void setId_note(int id_note) {
-		this.id_note = id_note;
+	public void setIdNote(int idNote) {
+		this.idNote = idNote;
 	}
 
 	public int getPosition() {
