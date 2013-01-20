@@ -3,8 +3,8 @@
 	<name>GeoNotesServer</name>
 	<comment></comment>
 	<projects>
-		<project>GeoNotesEntities</project>
-		<project>GeoNotesSession</project>
+		<project>GeoNotesJPA</project>
+		<project>GeoNotesEJB</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
