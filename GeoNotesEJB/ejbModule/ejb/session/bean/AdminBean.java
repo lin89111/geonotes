@@ -1,5 +1,7 @@
 package ejb.session.bean;
 
+import java.util.List;
+
 import ejb.session.remote.AdminRemote;
 import entities.EntityInterface;
 import entities.Note;
@@ -21,6 +23,8 @@ public class AdminBean implements AdminRemote {
 	private static final String PERSISTENCE_UNIT_NAME = "GeoNotesPU";
 
 	private User user;
+	private long userId;
+	private Route route;
 
 	private EntityManager getEntityManager() {
 		EntityManagerFactory emFactory = Persistence
@@ -50,49 +54,112 @@ public class AdminBean implements AdminRemote {
 		return null;
 	}
 
+	private void deleteObject(EntityInterface object) {
+		EntityManager em = this.getEntityManager();
+
+		em.getTransaction().begin();
+		em.remove(object);
+		em.getTransaction().commit();
+	}
+
 	@Override
 	public User addUser(String login, String password) {
 		User user = new User(login, password);
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
 
-		if (this.find(query) == null) {
-			this.user = (User) this.addObject(user);
-			return this.user;
-		}
-		
+		if (this.find(query) == null)
+			return this.user = (User) this.addObject(user);
+
 		return null;
 	}
 
 	@Override
 	public User login(String login, String password) {
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
+
 		User user = (User) this.find(query);
-
-		if (user != null)
-			return this.user = user;
-
-		return null;
+		System.out.println(this.user);
+		this.userId = user.getId();
+		this.user = user;
+		
+		return user;
 	}
 
 	@Override
 	public Route addRoute(String name) {
-		Route route = new Route(name, this.user.getId());
+		System.out.println(this.user);
+		System.out.println(this.userId);
+		
+		if (this.user != null)
+			this.route = (Route) this.addObject(new Route(name, this.user
+					.getId()));
 
-		return (Route) this.addObject(route);
+		return this.route;
 	}
 
 	@Override
 	public Note addNote(double x, double y, String description) {
-		Note note = new Note(x, y, description, this.user.getId());
+		Note note = null;
 
-		return (Note) this.addObject(note);
+		if (this.user != null)
+			note = (Note) this.addObject(new Note(x, y, description, this.user
+					.getId()));
+
+		if (note != null && this.route != null)
+			this.addNoteToRoute(note.getId(), this.route.getId());
+
+		return note;
+	}
+
+	private void addNoteToRoute(long idNote, long idRoute) {
+		this.addObject(new Step(idNote, idRoute));
 	}
 
 	@Override
-	public Step addNoteToRoute(long idNote, long idRoute) {
-		Step step = new Step(idNote, idRoute);
+	public void deleteRoute(Route route) {
+		if (this.route.getId() == route.getId())
+			this.route = null;
 
-		return (Step) this.addObject(step);
+		this.deleteSteps("idRoute = " + route.getId());
+		this.deleteObject(route);
 	}
 
+	@Override
+	public Route findRoute(String name) {
+		String query = "SELECT r FROM Route r WHERE r.name = '" + name + "'";
+
+		return (Route) this.find(query);
+	}
+
+	@Override
+	public Note findNote(double x, double y, String description) {
+		String query = "SELECT n FROM Note n WHERE n.x = " + x + " AND n.y = "
+				+ y + " AND description = '" + description + "'";
+
+		return (Note) this.find(query);
+	}
+
+	@Override
+	public void deleteNote(Note note) {
+		this.deleteSteps("idNote = " + note.getId());
+		this.deleteObject(note);
+	}
+
+	private List<Step> getSteps(String where) {
+		EntityManager em = this.getEntityManager();
+		String query = "SELECT s FROM Step s WHERE " + where;
+
+		Query q = em.createQuery(query);
+
+		return q.getResultList();
+	}
+
+	private void deleteSteps(String where) {
+		List<Step> steps = this.getSteps(where);
+
+		for (int i = 0; i < steps.size(); i++) {
+			this.deleteObject(steps.get(i));
+		}
+
+	}
 }

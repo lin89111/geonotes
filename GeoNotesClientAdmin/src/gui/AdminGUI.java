@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
-import javax.swing.JComboBox;
 
 public class AdminGUI extends JFrame {
 
@@ -44,8 +43,9 @@ public class AdminGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public AdminGUI() {
+		setTitle("AdminGUI");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(6, 1, 600, 280);
+		setBounds(6, 1, 600, 210);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -70,11 +70,6 @@ public class AdminGUI extends JFrame {
 		lblNote.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNote.setBounds(6, 119, 80, 16);
 		contentPane.add(lblNote);
-
-		JLabel lblStep = new JLabel("Step:");
-		lblStep.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblStep.setBounds(6, 194, 80, 16);
-		contentPane.add(lblStep);
 
 		JButton btnClear = new JButton("Clear");
 		btnClear.setBounds(91, 1, 117, 29);
@@ -200,32 +195,11 @@ public class AdminGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AdminActions.deleteNote(txtNote.getText());
+				AdminActions.deleteNote(txtNote.getText(),
+						txtLatitude.getText(), txtLongitude.getText());
 			}
 		});
 		contentPane.add(btnDeleteNote);
-
-		JLabel lblAddTheNote = new JLabel("add the note");
-		lblAddTheNote.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAddTheNote.setBounds(98, 194, 80, 16);
-		contentPane.add(lblAddTheNote);
-
-		JLabel lblToTheRoute = new JLabel("to the route");
-		lblToTheRoute.setHorizontalAlignment(SwingConstants.CENTER);
-		lblToTheRoute.setBounds(352, 194, 80, 16);
-		contentPane.add(lblToTheRoute);
-
-		JComboBox cBoxNote = new JComboBox();
-		cBoxNote.setBounds(190, 190, 150, 27);
-		contentPane.add(cBoxNote);
-
-		JComboBox cBoxRoute = new JComboBox();
-		cBoxRoute.setBounds(441, 190, 150, 27);
-		contentPane.add(cBoxRoute);
-
-		JButton btnAddStep = new JButton("Add Step");
-		btnAddStep.setBounds(98, 222, 117, 29);
-		contentPane.add(btnAddStep);
 
 		txtRoute = new JTextField();
 		txtRoute.setText("Route of Central Park");

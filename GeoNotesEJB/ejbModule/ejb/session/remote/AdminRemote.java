@@ -4,7 +4,6 @@ import javax.ejb.Remote;
 
 import entities.Note;
 import entities.Route;
-import entities.Step;
 import entities.User;
 
 @Remote
@@ -16,13 +15,13 @@ public interface AdminRemote {
 
 	public Route addRoute(String name);
 
-	// public boolean deleteRoute();
+	public void deleteRoute(Route route);
+
+	public Route findRoute(String name);
 
 	public Note addNote(double x, double y, String description);
-	
-	// public boolean deleteNote();
 
-	public Step addNoteToRoute(long idNote, long idRoute);
-	
-	// public boolean removeNoteForNote();
+	public Note findNote(double x, double y, String description);
+
+	public void deleteNote(Note note);
 }
