@@ -2,6 +2,8 @@ package entities;
 
 import java.io.Serializable;
 import java.lang.String;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,13 +12,13 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "notes")
-public class Note implements Serializable {
+public class Note implements EntityInterface, Serializable {
 
 	@Id
 	@GeneratedValue
 	private long id;
-	private float x;
-	private float y;
+	private double x;
+	private double y;
 	private String description;
 	private long idCreator;
 	private String creationDate;
@@ -24,6 +26,19 @@ public class Note implements Serializable {
 
 	public Note() {
 		super();
+	}
+
+	public Note(double x, double y, String description, long idCreator) {
+		this();
+		
+		this.x = x;
+		this.y = y;
+		this.description = description;
+		this.idCreator = idCreator;
+		
+		Date date = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.creationDate = format.format(date);
 	}
 
 	public long getId() {
@@ -34,19 +49,19 @@ public class Note implements Serializable {
 		this.id = id;
 	}
 
-	public float getX() {
+	public double getX() {
 		return this.x;
 	}
 
-	public void setX(float x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 
-	public float getY() {
+	public double getY() {
 		return this.y;
 	}
 
-	public void setY(float y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 

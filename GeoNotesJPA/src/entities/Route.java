@@ -2,6 +2,8 @@ package entities;
 
 import java.io.Serializable;
 import java.lang.String;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "routes")
-public class Route implements Serializable {
+public class Route implements EntityInterface, Serializable {
 
 	@Id
 	@GeneratedValue
@@ -22,6 +24,17 @@ public class Route implements Serializable {
 
 	public Route() {
 		super();
+	}
+
+	public Route(String name, long idCreator) {
+		this();
+
+		this.name = name;
+		this.idCreator = idCreator;
+		
+		Date date = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.creationDate = format.format(date);
 	}
 
 	public long getId() {

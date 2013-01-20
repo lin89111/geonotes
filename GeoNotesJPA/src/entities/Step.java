@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "steps")
-public class Step implements Serializable {
+public class Step implements EntityInterface, Serializable {
 
 	@Id
 	@GeneratedValue
@@ -20,6 +20,13 @@ public class Step implements Serializable {
 
 	public Step() {
 		super();
+	}
+
+	public Step(long idNote, long idRoute) {
+		this();
+
+		this.idNote = idNote;
+		this.idRoute = idRoute;
 	}
 
 	public long getId() {
