@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
-import javax.swing.JTextArea;
 import javax.swing.JComboBox;
 
 public class AdminGUI extends JFrame {

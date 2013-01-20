@@ -55,8 +55,10 @@ public class AdminBean implements AdminRemote {
 		User user = new User(login, password);
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
 
-		if (this.find(query) == null)
-			return (User) this.addObject(user);
+		if (this.find(query) == null) {
+			this.user = (User) this.addObject(user);
+			return this.user;
+		}
 		
 		return null;
 	}

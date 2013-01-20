@@ -8,13 +8,20 @@ import entities.User;
 public class AdminActions {
 
 	public static void clearDatabase() {
-		// TODO Auto-generated method stub
-
+		System.out.println("I know you don't really want to do it...");
 	}
 
 	public static void initializeDatabase() {
-		// TODO Auto-generated method stub
+		System.out.println("Adding some values in the database...");
 
+		try {
+			InitialContext ctx = new InitialContext();
+			AdminRemote bean = (AdminRemote) ctx.lookup("AdminBean");
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void login(String login, String password) {
