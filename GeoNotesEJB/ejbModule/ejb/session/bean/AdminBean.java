@@ -20,7 +20,7 @@ public class AdminBean implements AdminRemote {
 
 	private static final String PERSISTENCE_UNIT_NAME = "GeoNotesPU";
 
-	private long userId;
+	private User user;
 	private Route route;
 
 	private EntityManager getEntityManager() {
@@ -55,7 +55,7 @@ public class AdminBean implements AdminRemote {
 		EntityManager em = this.getEntityManager();
 
 		em.getTransaction().begin();
-		em.remove(object);
+		em.remove(em.merge(object));
 		em.getTransaction().commit();
 	}
 
@@ -64,11 +64,8 @@ public class AdminBean implements AdminRemote {
 		User user = new User(login, password);
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
 
-		if (this.find(query) == null) {
-			user = (User) this.addObject(user);
-			this.userId = user.getId();
-			return user;
-		}
+		if (this.find(query) == null)
+			return this.user = (User) this.addObject(user);
 
 		return null;
 	}
@@ -77,19 +74,16 @@ public class AdminBean implements AdminRemote {
 	public User login(String login, String password) {
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
 
-		User user = (User) this.find(query);
-		this.userId = user.getId();
-		System.out.println(userId);
+		this.user = (User) this.find(query);
 
-		return user;
+		return this.user;
 	}
 
 	@Override
 	public Route addRoute(String name) {
-		System.out.println(this.userId);
-
-		if (this.userId != 0)
-			this.route = (Route) this.addObject(new Route(name, this.userId));
+		if (this.user != null)
+			this.route = (Route) this.addObject(new Route(name, this.user
+					.getId()));
 
 		return this.route;
 	}
@@ -98,9 +92,9 @@ public class AdminBean implements AdminRemote {
 	public Note addNote(double x, double y, String description) {
 		Note note = null;
 
-		if (this.userId != 0)
-			note = (Note) this.addObject(new Note(x, y, description,
-					this.userId));
+		if (this.user != null)
+			note = (Note) this.addObject(new Note(x, y, description, this.user
+					.getId()));
 
 		if (note != null && this.route != null)
 			this.addNoteToRoute(note.getId(), this.route.getId());
@@ -114,10 +108,13 @@ public class AdminBean implements AdminRemote {
 
 	@Override
 	public void deleteRoute(Route route) {
-		if (this.route.getId() == route.getId())
+		if (route == null)
+			return;
+
+		if (this.route != null && this.route.getId() == route.getId())
 			this.route = null;
 
-		this.deleteSteps("idRoute = " + route.getId());
+		this.deleteSteps("s.idRoute = " + route.getId());
 		this.deleteObject(route);
 	}
 
@@ -131,22 +128,24 @@ public class AdminBean implements AdminRemote {
 	@Override
 	public Note findNote(double x, double y, String description) {
 		String query = "SELECT n FROM Note n WHERE n.x = " + x + " AND n.y = "
-				+ y + " AND description = '" + description + "'";
+				+ y + " AND n.description = '" + description + "'";
 
 		return (Note) this.find(query);
 	}
 
 	@Override
 	public void deleteNote(Note note) {
-		this.deleteSteps("idNote = " + note.getId());
+		if (note == null)
+			return;
+		
+		this.deleteSteps("s.idNote = " + note.getId());
 		this.deleteObject(note);
 	}
 
 	private List<Step> getSteps(String where) {
 		EntityManager em = this.getEntityManager();
-		String query = "SELECT s FROM Step s WHERE " + where;
 
-		Query q = em.createQuery(query);
+		Query q = em.createQuery("SELECT s FROM Step s WHERE " + where);
 
 		return q.getResultList();
 	}

@@ -75,8 +75,12 @@ public class AdminActions {
 
 	public static void deleteRoute(String name) {
 		Route route = bean.findRoute(name);
-		bean.deleteRoute(route);
-		System.out.println(route + " deleted !");
+
+		if (route != null) {
+			bean.deleteRoute(route);
+			System.out.println(route + " deleted !");
+		} else
+			System.out.println("Nothing has been deleted.");
 	}
 
 	public static void addNote(String description, String latitude,
@@ -92,7 +96,12 @@ public class AdminActions {
 			String longitude) {
 		Note note = bean.findNote(Double.parseDouble(latitude),
 				Double.parseDouble(longitude), description);
-		bean.deleteNote(note);
-		System.out.println(note + " deleted !");
+
+		if (note != null) {
+			bean.deleteNote(note);
+			System.out.println(note + " deleted !");
+		} else
+			System.out.println("Nothing has been deleted.");
+
 	}
 }
