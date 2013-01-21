@@ -9,7 +9,6 @@ import entities.Route;
 import entities.Step;
 import entities.User;
 
-import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,12 +16,10 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 @Stateful(name = "AdminEJB", mappedName = "AdminBean")
-@LocalBean
 public class AdminBean implements AdminRemote {
 
 	private static final String PERSISTENCE_UNIT_NAME = "GeoNotesPU";
 
-	private User user;
 	private long userId;
 	private Route route;
 
@@ -67,8 +64,11 @@ public class AdminBean implements AdminRemote {
 		User user = new User(login, password);
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
 
-		if (this.find(query) == null)
-			return this.user = (User) this.addObject(user);
+		if (this.find(query) == null) {
+			user = (User) this.addObject(user);
+			this.userId = user.getId();
+			return user;
+		}
 
 		return null;
 	}
@@ -78,21 +78,18 @@ public class AdminBean implements AdminRemote {
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
 
 		User user = (User) this.find(query);
-		System.out.println(this.user);
 		this.userId = user.getId();
-		this.user = user;
-		
+		System.out.println(userId);
+
 		return user;
 	}
 
 	@Override
 	public Route addRoute(String name) {
-		System.out.println(this.user);
 		System.out.println(this.userId);
-		
-		if (this.user != null)
-			this.route = (Route) this.addObject(new Route(name, this.user
-					.getId()));
+
+		if (this.userId != 0)
+			this.route = (Route) this.addObject(new Route(name, this.userId));
 
 		return this.route;
 	}
@@ -101,9 +98,9 @@ public class AdminBean implements AdminRemote {
 	public Note addNote(double x, double y, String description) {
 		Note note = null;
 
-		if (this.user != null)
-			note = (Note) this.addObject(new Note(x, y, description, this.user
-					.getId()));
+		if (this.userId != 0)
+			note = (Note) this.addObject(new Note(x, y, description,
+					this.userId));
 
 		if (note != null && this.route != null)
 			this.addNoteToRoute(note.getId(), this.route.getId());
