@@ -24,6 +24,4 @@ public interface AdminRemote {
 	public Note findNote(double x, double y, String description);
 
 	public void deleteNote(Note note);
-	
-	public void clearDatabase();
 }

@@ -137,7 +137,7 @@ public class AdminBean implements AdminRemote {
 	public void deleteNote(Note note) {
 		if (note == null)
 			return;
-
+		
 		this.deleteSteps("s.idNote = " + note.getId());
 		this.deleteObject(note);
 	}
@@ -156,19 +156,6 @@ public class AdminBean implements AdminRemote {
 		for (int i = 0; i < steps.size(); i++) {
 			this.deleteObject(steps.get(i));
 		}
-	}
-	/*
-	private void getAll(String query) {
-		EntityManager em = this.getEntityManager();
-
-		Query q = em.createQuery(query);
-
-		return q.getResultList();
-	}*/
-
-	@Override
-	public void clearDatabase() {
-		// TODO Auto-generated method stub
 
 	}
 }
