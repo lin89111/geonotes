@@ -18,6 +18,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+/**
+ * Bean des actions accessibles pour un client de type Admin
+ */
 @WebService(serviceName = "AdminWS")
 @Stateful(name = "AdminEJB", mappedName = "AdminBean")
 public class AdminBean implements AdminRemote {
@@ -27,6 +30,11 @@ public class AdminBean implements AdminRemote {
 	private User user;
 	private Route route;
 
+	/**
+	 * Recupere un entity manager
+	 * 
+	 * @return
+	 */
 	private EntityManager getEntityManager() {
 		EntityManagerFactory emFactory = Persistence
 				.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
@@ -34,6 +42,13 @@ public class AdminBean implements AdminRemote {
 		return emFactory.createEntityManager();
 	}
 
+	/**
+	 * Ajoute un objet dans la base de donnees. Tous les beans Entity
+	 * implementent la classe EntityInterface.
+	 * 
+	 * @param object
+	 * @return
+	 */
 	private EntityInterface addObject(EntityInterface object) {
 		EntityManager em = this.getEntityManager();
 
@@ -44,6 +59,13 @@ public class AdminBean implements AdminRemote {
 		return object;
 	}
 
+	/**
+	 * Trouve un objet dans la base de donnees. Tous les beans Entity
+	 * implementent la classe EntityInterface.
+	 * 
+	 * @param query
+	 * @return
+	 */
 	private EntityInterface find(String query) {
 		EntityManager em = this.getEntityManager();
 
@@ -55,6 +77,12 @@ public class AdminBean implements AdminRemote {
 		return null;
 	}
 
+	/**
+	 * Supprime un objet de la base de donnees. Tous les beans Entity
+	 * implementent la classe EntityInterface.
+	 * 
+	 * @param object
+	 */
 	private void deleteObject(EntityInterface object) {
 		EntityManager em = this.getEntityManager();
 
@@ -63,6 +91,9 @@ public class AdminBean implements AdminRemote {
 		em.getTransaction().commit();
 	}
 
+	/**
+	 * Ajoute un nouvel utilisateur dans la base de donnees
+	 */
 	@Override
 	@WebMethod(operationName = "addUser")
 	public User addUser(@WebParam(name = "login") String login,
@@ -76,6 +107,9 @@ public class AdminBean implements AdminRemote {
 		return null;
 	}
 
+	/**
+	 * Identifie un utilisateur
+	 */
 	@Override
 	@WebMethod(operationName = "login")
 	public User login(@WebParam(name = "login") String login,
@@ -87,6 +121,9 @@ public class AdminBean implements AdminRemote {
 		return this.user;
 	}
 
+	/**
+	 * Ajoute un parcours dans la base de donnees
+	 */
 	@Override
 	@WebMethod(operationName = "addRoute")
 	public Route addRoute(@WebParam(name = "name") String name) {
@@ -97,6 +134,9 @@ public class AdminBean implements AdminRemote {
 		return this.route;
 	}
 
+	/**
+	 * Ajoute une note dans la base de donnees
+	 */
 	@Override
 	@WebMethod(operationName = "addNote")
 	public Note addNote(@WebParam(name = "x") double x,
@@ -114,10 +154,35 @@ public class AdminBean implements AdminRemote {
 		return note;
 	}
 
+	/**
+	 * Ajoute une etape, ie. une correspondance dans la base de donnees entre un
+	 * parcours et une note
+	 * 
+	 * @param idNote
+	 * @param idRoute
+	 */
 	private void addNoteToRoute(long idNote, long idRoute) {
-		this.addObject(new Step(idNote, idRoute));
+		Step step = (Step) this.addObject(new Step(idNote, idRoute));
+
+		step.setPosition(this.getPosition(idRoute));
+	}
+	
+	private int getPosition(long idRoute) {
+		String queryString = "SELECT MAX(s.position) FROM Step s WHERE s.idRoute = "
+				+ idRoute;
+		EntityManager em = this.getEntityManager();
+		Query q = em.createQuery(queryString);
+		int position = 1;
+		
+		if (q.getResultList().size() > 0)
+			position += (Integer) q.getResultList().get(0);
+		
+		return position;
 	}
 
+	/**
+	 * Supprime de la base de donnees le parcours passe en parametre
+	 */
 	@Override
 	@WebMethod(operationName = "deleteRoute")
 	public void deleteRoute(@WebParam(name = "route") Route route) {
@@ -131,6 +196,10 @@ public class AdminBean implements AdminRemote {
 		this.deleteObject(route);
 	}
 
+	/**
+	 * Retourne le parcours de la base de donnees ayant pour valeurs les
+	 * parametres indiques
+	 */
 	@Override
 	@WebMethod(operationName = "findRoute")
 	public Route findRoute(@WebParam(name = "name") String name) {
@@ -139,6 +208,10 @@ public class AdminBean implements AdminRemote {
 		return (Route) this.find(query);
 	}
 
+	/**
+	 * Retourne la note de la base de donnees ayant pour valeurs les parametres
+	 * indiques
+	 */
 	@Override
 	@WebMethod(operationName = "findNote")
 	public Note findNote(@WebParam(name = "x") double x,
@@ -150,6 +223,9 @@ public class AdminBean implements AdminRemote {
 		return (Note) this.find(query);
 	}
 
+	/**
+	 * Supprime la note passee en parametre
+	 */
 	@Override
 	@WebMethod(operationName = "deleteNote")
 	public void deleteNote(@WebParam(name = "note") Note note) {
@@ -160,6 +236,13 @@ public class AdminBean implements AdminRemote {
 		this.deleteObject(note);
 	}
 
+	/**
+	 * Retourne la liste de toutes les etapes de la base de donnees
+	 * correspondant a la clause where passee en parametre
+	 * 
+	 * @param where
+	 * @return
+	 */
 	private List<Step> getSteps(String where) {
 		EntityManager em = this.getEntityManager();
 
@@ -168,6 +251,12 @@ public class AdminBean implements AdminRemote {
 		return q.getResultList();
 	}
 
+	/**
+	 * Supprime de la base de donnees l'etape correspondant a la clause where
+	 * indiquee en parametre
+	 * 
+	 * @param where
+	 */
 	private void deleteSteps(String where) {
 		List<Step> steps = this.getSteps(where);
 
