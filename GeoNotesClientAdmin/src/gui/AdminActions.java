@@ -41,6 +41,9 @@ public class AdminActions {
 					"La basilique Saint-Denis");
 			System.out.println(route + "\n" + note1 + "\n" + note2 + "\n"
 					+ note3);
+			User user1 = bean.addUser("jeremy", "argoud");
+			User user2 = bean.addUser("samuel", "collins");
+			System.out.println(user1 + "\n" + user2);
 		}
 	}
 
