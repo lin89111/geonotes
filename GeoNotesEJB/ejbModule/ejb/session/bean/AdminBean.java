@@ -10,9 +10,6 @@ import entities.Step;
 import entities.User;
 
 import javax.ejb.Stateful;
-import javax.jws.WebService;
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -21,7 +18,6 @@ import javax.persistence.Query;
 /**
  * Bean des actions accessibles pour un client de type Admin
  */
-@WebService(serviceName = "AdminWS")
 @Stateful(name = "AdminEJB", mappedName = "AdminBean")
 public class AdminBean implements AdminRemote {
 
@@ -95,9 +91,7 @@ public class AdminBean implements AdminRemote {
 	 * Ajoute un nouvel utilisateur dans la base de donnees
 	 */
 	@Override
-	@WebMethod(operationName = "addUser")
-	public User addUser(@WebParam(name = "login") String login,
-			@WebParam(name = "password") String password) {
+	public User addUser(String login, String password) {
 		User user = new User(login, password);
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
 
@@ -111,9 +105,7 @@ public class AdminBean implements AdminRemote {
 	 * Identifie un utilisateur
 	 */
 	@Override
-	@WebMethod(operationName = "login")
-	public User login(@WebParam(name = "login") String login,
-			@WebParam(name = "password") String password) {
+	public User login(String login, String password) {
 		String query = "SELECT u FROM User u WHERE u.login = '" + login + "'";
 
 		this.user = (User) this.find(query);
@@ -125,8 +117,7 @@ public class AdminBean implements AdminRemote {
 	 * Ajoute un parcours dans la base de donnees
 	 */
 	@Override
-	@WebMethod(operationName = "addRoute")
-	public Route addRoute(@WebParam(name = "name") String name) {
+	public Route addRoute(String name) {
 		if (this.user != null)
 			this.route = (Route) this.addObject(new Route(name, this.user
 					.getId()));
@@ -138,10 +129,7 @@ public class AdminBean implements AdminRemote {
 	 * Ajoute une note dans la base de donnees
 	 */
 	@Override
-	@WebMethod(operationName = "addNote")
-	public Note addNote(@WebParam(name = "x") double x,
-			@WebParam(name = "y") double y,
-			@WebParam(name = "description") String description) {
+	public Note addNote(double x, double y, String description) {
 		Note note = null;
 
 		if (this.user != null)
@@ -163,29 +151,13 @@ public class AdminBean implements AdminRemote {
 	 */
 	private void addNoteToRoute(long idNote, long idRoute) {
 		Step step = (Step) this.addObject(new Step(idNote, idRoute));
-
-		step.setPosition(this.getPosition(idRoute));
-	}
-	
-	private int getPosition(long idRoute) {
-		String queryString = "SELECT MAX(s.position) FROM Step s WHERE s.idRoute = "
-				+ idRoute;
-		EntityManager em = this.getEntityManager();
-		Query q = em.createQuery(queryString);
-		int position = 1;
-		
-		if (q.getResultList().size() > 0)
-			position += (Integer) q.getResultList().get(0);
-		
-		return position;
 	}
 
 	/**
 	 * Supprime de la base de donnees le parcours passe en parametre
 	 */
 	@Override
-	@WebMethod(operationName = "deleteRoute")
-	public void deleteRoute(@WebParam(name = "route") Route route) {
+	public void deleteRoute(Route route) {
 		if (route == null)
 			return;
 
@@ -201,8 +173,7 @@ public class AdminBean implements AdminRemote {
 	 * parametres indiques
 	 */
 	@Override
-	@WebMethod(operationName = "findRoute")
-	public Route findRoute(@WebParam(name = "name") String name) {
+	public Route findRoute(String name) {
 		String query = "SELECT r FROM Route r WHERE r.name = '" + name + "'";
 
 		return (Route) this.find(query);
@@ -213,10 +184,7 @@ public class AdminBean implements AdminRemote {
 	 * indiques
 	 */
 	@Override
-	@WebMethod(operationName = "findNote")
-	public Note findNote(@WebParam(name = "x") double x,
-			@WebParam(name = "y") double y,
-			@WebParam(name = "description") String description) {
+	public Note findNote(double x, double y, String description) {
 		String query = "SELECT n FROM Note n WHERE n.x = " + x + " AND n.y = "
 				+ y + " AND n.description = '" + description + "'";
 
@@ -227,8 +195,7 @@ public class AdminBean implements AdminRemote {
 	 * Supprime la note passee en parametre
 	 */
 	@Override
-	@WebMethod(operationName = "deleteNote")
-	public void deleteNote(@WebParam(name = "note") Note note) {
+	public void deleteNote(Note note) {
 		if (note == null)
 			return;
 

@@ -17,7 +17,6 @@ public class AdminActions {
 			InitialContext ctx = new InitialContext();
 			bean = (AdminRemote) ctx.lookup("AdminBean");
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
