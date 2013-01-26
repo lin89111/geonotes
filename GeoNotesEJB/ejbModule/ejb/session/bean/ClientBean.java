@@ -2,7 +2,7 @@ package ejb.session.bean;
 
 import java.util.List;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -14,7 +14,7 @@ import entities.Note;
 import entities.Route;
 import entities.Step;
 
-@Stateful(name = "ClientEJB", mappedName = "ClientBean")
+@Stateless(name = "ClientEJB", mappedName = "ClientBean")
 public class ClientBean implements ClientRemote {
 
 	private static final String PERSISTENCE_UNIT_NAME = "GeoNotesPU";
