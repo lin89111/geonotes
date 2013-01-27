@@ -22,7 +22,8 @@ public class AdminActions {
 	}
 
 	public static void clearDatabase() {
-		System.out.println("I know you don't really want to do it...");
+		bean.clearDatabase();
+		System.out.println("Database cleared!");
 	}
 
 	public static void initializeDatabase() {
@@ -85,19 +86,17 @@ public class AdminActions {
 			System.out.println("Nothing has been deleted.");
 	}
 
-	public static void addNote(String description, String latitude,
-			String longitude) {
-		Note note = bean.addNote(Double.parseDouble(latitude),
-				Double.parseDouble(longitude), description);
+	public static void addNote(String description, double latitude,
+			double longitude) {
+		Note note = bean.addNote(latitude, longitude, description);
 
 		if (note != null)
 			System.out.println("Note added ! " + note);
 	}
 
-	public static void deleteNote(String description, String latitude,
-			String longitude) {
-		Note note = bean.findNote(Double.parseDouble(latitude),
-				Double.parseDouble(longitude), description);
+	public static void deleteNote(String description, double latitude,
+			double longitude) {
+		Note note = bean.findNote(latitude, longitude, description);
 
 		if (note != null) {
 			bean.deleteNote(note);

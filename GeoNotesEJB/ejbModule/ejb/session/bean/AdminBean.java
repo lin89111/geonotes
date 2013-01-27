@@ -232,4 +232,33 @@ public class AdminBean implements AdminRemote {
 		}
 
 	}
+
+	/**
+	 * Vide la base de donnees
+	 */
+	@Override
+	public void clearDatabase() {
+		EntityManager em = this.getEntityManager();
+		em.getTransaction().begin();
+		
+		Query q = em.createQuery("SELECT r FROM Route r");
+		List<Route> routes = q.getResultList();
+		
+		for (Route route : routes)
+			this.deleteRoute(route);
+		
+		q = em.createQuery("SELECT n FROM Note n");
+		List<Note> notes = q.getResultList();
+		
+		for (Note note : notes)
+			this.deleteNote(note);
+		
+		q = em.createQuery("SELECT u FROM User u");
+		List<User> users = q.getResultList();
+		
+		for (User user : users)
+			this.deleteObject(user);
+		
+		em.getTransaction().commit();
+	}
 }

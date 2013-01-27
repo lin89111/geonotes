@@ -26,6 +26,12 @@ public class ClientBean implements ClientRemote {
 		return emFactory.createEntityManager();
 	}
 
+	/**
+	 * Execute la requete en parametre pour recherche dans la base de donnees
+	 * 
+	 * @param query
+	 * @return
+	 */
 	private EntityInterface find(String query) {
 		EntityManager em = this.getEntityManager();
 
@@ -37,6 +43,9 @@ public class ClientBean implements ClientRemote {
 		return null;
 	}
 
+	/**
+	 * Retourne la liste des parcours dans la base de donnees
+	 */
 	@Override
 	public List<Route> getRoutes() {
 		EntityManager em = this.getEntityManager();
@@ -47,6 +56,9 @@ public class ClientBean implements ClientRemote {
 		return q.getResultList();
 	}
 
+	/**
+	 * Retourne la liste des etapes d'un parcours
+	 */
 	public List<Step> getSteps(String where) {
 		EntityManager em = this.getEntityManager();
 
@@ -55,6 +67,9 @@ public class ClientBean implements ClientRemote {
 		return q.getResultList();
 	}
 
+	/**
+	 * Selectionne un parcours
+	 */
 	@Override
 	public Route selectRoute(long idRoute) {
 		String query = "SELECT r FROM Route r WHERE r.id = " + idRoute;
@@ -67,6 +82,9 @@ public class ClientBean implements ClientRemote {
 		return route;
 	}
 
+	/**
+	 * Cherche une note dans la base de donnees et la retourne
+	 */
 	@Override
 	public Note findNote(long id) {
 		String query = "SELECT n FROM Note n WHERE n.id = " + id;

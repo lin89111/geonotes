@@ -186,11 +186,11 @@ public class AdminGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					double latitude = Float.parseFloat(txtLatitude.getText());
-					double longitude = Float.parseFloat(txtLongitude.getText());
+					double latitude = Double.parseDouble(txtLatitude.getText());
+					double longitude = Double.parseDouble(txtLongitude
+							.getText());
 
-					AdminActions.addNote(txtNote.getText(), "" + latitude, ""
-							+ longitude);
+					AdminActions.addNote(txtNote.getText(), latitude, longitude);
 				} catch (NumberFormatException ex) {
 					System.out.println("Invalid latitude nor longitude value");
 				}
@@ -204,8 +204,16 @@ public class AdminGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AdminActions.deleteNote(txtNote.getText(),
-						txtLatitude.getText(), txtLongitude.getText());
+				try {
+					double latitude = Double.parseDouble(txtLatitude.getText());
+					double longitude = Double.parseDouble(txtLongitude
+							.getText());
+
+					AdminActions.deleteNote(txtNote.getText(), latitude,
+							longitude);
+				} catch (NumberFormatException ex) {
+					System.out.println("Invalid latitude nor longitude value");
+				}
 			}
 		});
 		contentPane.add(btnDeleteNote);
